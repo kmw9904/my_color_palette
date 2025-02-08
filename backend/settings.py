@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'color',
     'recommendation',
     'community',
+    'products',
+    'custom_palette',
 ]
 
 MIDDLEWARE = [

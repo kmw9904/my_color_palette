@@ -3,7 +3,52 @@ import colorsys
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .utils_palette import get_palette_from_colorhunt
+from .utils_palette import (
+    fetch_palettes_from_colorhunter,
+    select_palette_with_required_colors,
+    extract_recommendation_colors
+)
+class PaletteBasedRecommendationView(APIView):
+    """
+    사용자로부터 피부톤, 아우터 색상, 그리고 원하는 스타일을 받아서,
+    Color Hunter API를 통해 팔레트를 가져온 후, 
+    두 색상(피부톤과 아우터 색상)이 포함(혹은 유사)된 팔레트를 선택하고,
+    해당 팔레트에서 이 두 색상을 제외한 나머지 색상들을 추천하는 API.
+    """
+    def post(self, request):
+        skin_tone = request.data.get("skin_tone")
+        outer_color = request.data.get("outer_color") or skin_tone
+        style = request.data.get("style", "빈티지")
+        
+        if not skin_tone:
+            return Response({"error": "skin_tone is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # 필수 색상 목록 생성
+        required_colors = [skin_tone, outer_color]
+        
+        # RapidAPI의 Color Hunter API에서 해당 스타일의 팔레트들을 가져옴
+        palettes_data = fetch_palettes_from_colorhunter(theme=style)
+        if not palettes_data:
+            return Response({"error": "Failed to fetch palettes from API"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        # API 응답 구조에 따라 팔레트 리스트 추출 (예시: palettes_data["palettes"])
+        palettes = palettes_data.get("palettes", [])
+        if not palettes:
+            return Response({"error": "No palettes found for the given style"}, status=status.HTTP_404_NOT_FOUND)
+        
+        # 필수 색상을 포함하는 최적의 팔레트 선택
+        best_palette = select_palette_with_required_colors(required_colors, palettes)
+        if not best_palette:
+            return Response({"error": "No suitable palette found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        # 선택된 팔레트에서 추천 색상 추출 (필수 색상과 유사한 색상은 제외)
+        recommended_colors = extract_recommendation_colors(best_palette, exclude_colors=required_colors)
+        
+        result = {
+            "selected_palette": best_palette,
+            "recommended_colors": recommended_colors
+        }
+        return Response(result, status=status.HTTP_200_OK)
 
 def complementary_color(hex_color):
     """
@@ -80,5 +125,5 @@ class PaletteRecommendationView(APIView):
         if not base_color:
             return Response({"error": "base_color is required"}, status=status.HTTP_400_BAD_REQUEST)
         
-        palette_data = get_palette_from_colorhunt(base_color)
+        palette_data = fetch_palettes_from_colorhunter(base_color)
         return Response(palette_data, status=status.HTTP_200_OK)
