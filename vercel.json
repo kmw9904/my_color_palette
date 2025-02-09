@@ -4,6 +4,7 @@
   "env": {
     "DEBUG": "False",
     "SECRET_KEY": "your-secret-key",
-    "DATABASE_URL": "sqlite:///db.sqlite3"
+    "DATABASE_URL": "sqlite:///db.sqlite3",
+    "PORT": "3000"
   }
 }
