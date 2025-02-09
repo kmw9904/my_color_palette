@@ -19,3 +19,4 @@ COPY . /app/
 
 # 6. 컨테이너 실행 시 Gunicorn으로 애플리케이션 구동 (포트 8000 사용)
 CMD ["gunicorn", "backend.wsgi:application", "--bind", "0.0.0.0:${PORT:-8000}"]
+

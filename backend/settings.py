@@ -156,3 +156,4 @@ REST_FRAMEWORK = {
 
 ALLOWED_HOSTS = ["color-palette-mjyql9txk-kms990415s-projects.vercel.app", "localhost"]
 
+
