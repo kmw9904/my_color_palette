@@ -3,10 +3,13 @@
 # 1. Python 3.9-slim 이미지를 베이스 이미지로 사용
 FROM python:3.9-slim
 
-# 2. 필요한 시스템 패키지 업데이트 및 설치 (libGL 및 libglib 관련 패키지 추가)
+# 2. 필요한 시스템 패키지 업데이트 및 설치 (OpenCV 관련 라이브러리 포함)
 RUN apt-get update && apt-get install -y \
     libgl1-mesa-glx \
     libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # 3. Python 환경 변수 설정
