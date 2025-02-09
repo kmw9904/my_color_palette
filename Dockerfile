@@ -2,10 +2,11 @@
 
 FROM python:3.9
 
-# 필요한 시스템 패키지 업데이트 및 설치 (OpenCV 및 cv2가 의존하는 라이브러리 포함)
+# 업데이트 및 필요한 시스템 패키지 설치 (OpenCV 관련 라이브러리 포함)
 RUN apt-get update && apt-get install -y \
     libgl1-mesa-glx \
     libglib2.0-0 \
+    libglib2.0-dev \
     libgthread-2.0-0 \
     libsm6 \
     libxext6 \
