@@ -153,3 +153,5 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ),
 }
+
+ALLOWED_HOSTS = ["color-palette-mjyql9txk-kms990415s-projects.vercel.app", "localhost"]
