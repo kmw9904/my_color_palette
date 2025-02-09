@@ -1,8 +1,6 @@
-# Dockerfile
-
 FROM python:3.9
 
-# 업데이트 및 필요한 시스템 패키지 설치 (OpenCV 관련 라이브러리 포함)
+# 필요한 시스템 패키지 설치
 RUN apt-get update && apt-get install -y \
     libgl1-mesa-glx \
     libglib2.0-0 \
@@ -11,7 +9,8 @@ RUN apt-get update && apt-get install -y \
     libsm6 \
     libxext6 \
     libxrender-dev \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && ldconfig
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
